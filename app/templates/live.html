@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="position-relative">
+            <video id="webcam" autoplay playsinline muted class="w-100 rounded border border-warning shadow-lg"></video>
+            <canvas id="skeleton_overlay" class="position-absolute top-0 start-0 w-100 h-100"></canvas>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 mb-3 border-start border-warning border-4">
+            <h5>Status Sistem</h5>
+            <div id="status" class="badge bg-secondary">Deconectat de la Server</div>
+            <hr>
+            <h6>Jucător Detectat: <span id="player_name" class="text-warning">Căutare...</span></h6>
+        </div>
+        
+        <div class="card p-3">
+            <h5>Statistici Live</h5>
+            <ul class="list-group list-group-flush bg-transparent">
+                <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                    Unghi Cot: <strong id="elbow_angle">--°</strong>
+                </li>
+                <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                    Săritură (Y): <strong id="jump_height">-- cm</strong>
+                </li>
+                <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                    Aruncări: <strong id="shots_count">0</strong>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/streaming.js"></script>
+{% endblock %}

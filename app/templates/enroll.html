@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card p-4 shadow">
+            <h3>Înrolare FaceID</h3>
+            <p class="text-muted">Poziționează-te în fața camerei și apasă butonul.</p>
+            
+            <div class="position-relative mb-3">
+                <video id="enroll_webcam" autoplay playsinline class="w-100 rounded border border-primary"></video>
+                <canvas id="capture_canvas" style="display:none;"></canvas>
+            </div>
+
+            <div class="mb-3 text-start">
+                <label class="form-label">Nume Jucător</label>
+                <input type="text" id="player_name" class="form-control" placeholder="Ex: Stephen Curry">
+            </div>
+
+            <button id="snap_btn" class="btn btn-primary btn-lg w-100">📸 Capturează & Salvează</button>
+            
+            <div id="enroll_status" class="mt-3 alert d-none"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const video = document.getElementById('enroll_webcam');
+    const canvas = document.getElementById('capture_canvas');
+    const snapBtn = document.getElementById('snap_btn');
+    const nameInput = document.getElementById('player_name');
+    const statusBox = document.getElementById('enroll_status');
+
+    // Pornim camera imediat ce se încarcă pagina
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => { video.srcObject = stream; })
+        .catch(err => { console.error("Cameră indisponibilă:", err); });
+
+    snapBtn.addEventListener('click', async () => {
+        if (!nameInput.value) {
+            alert("Te rugăm să introduci un nume!");
+            return;
+        }
+
+        // Fixăm cadrul în canvas
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        
+        const imageData = canvas.toDataURL('image/jpeg', 0.8);
+        
+        // Trimitem datele la server folosind FormData
+        const formData = new FormData();
+        formData.append("name", nameInput.value);
+        formData.append("image_data", imageData);
+
+        statusBox.className = "mt-3 alert alert-info";
+        statusBox.innerText = "Se procesează datele biometrice...";
+        statusBox.classList.remove('d-none');
+
+        try {
+            const response = await fetch('/enroll_camera', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+
+            if (result.status === "success") {
+                statusBox.className = "mt-3 alert alert-success";
+                statusBox.innerText = result.message;
+                setTimeout(() => window.location.href = "/", 2000);
+            } else {
+                statusBox.className = "mt-3 alert alert-danger";
+                statusBox.innerText = result.message;
+            }
+        } catch (err) {
+            statusBox.className = "mt-3 alert alert-danger";
+            statusBox.innerText = "Eroare de conexiune la server.";
+        }
+    });
+</script>
+{% endblock %}

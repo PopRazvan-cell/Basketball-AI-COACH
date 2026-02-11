@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Jucători înrolați</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for player in players %}
+            <div class="col">
+                <div class="card h-100 text-center p-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ player }}</h5>
+                        <p class="text-muted small">ID Bio-Metric Salvat</p>
+                        <a href="/live" class="btn btn-sm btn-outline-warning">Analizează Sesiune</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <p>Niciun jucător înrolat încă. Mergi la secțiunea de Înrolare.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

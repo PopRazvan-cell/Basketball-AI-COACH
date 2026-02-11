@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  basketball_ai:
+    build: .
+    ports:
+      - "8503:8000"
+    volumes:
+      - ./app/profiles:/app/app/profiles
+    restart: always
