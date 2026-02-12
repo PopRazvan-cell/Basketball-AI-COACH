@@ -112,21 +112,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 6. Desenarea scheletului pe overlay
     function drawSkeleton(keypoints) {
-        overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
-        
-        // Desenăm punctele cheie (Keypoints)
-        keypoints.forEach(kp => {
-            const [x, y, confidence] = kp;
-            if (confidence > 0.3) { // Desenăm doar punctele sigure
-                overlayCtx.beginPath();
-                overlayCtx.arc(x, y, 5, 0, 2 * Math.PI);
-                overlayCtx.fillStyle = "#ff6600"; // Portocaliu baschet
-                overlayCtx.fill();
-                overlayCtx.strokeStyle = "white";
-                overlayCtx.stroke();
-            }
-        });
-    }
+    const overlay = document.getElementById('skeleton_overlay');
+    if (!overlay) return;
+    const ctx = overlay.getContext('2d');
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+    // Definim conexiunile scheletului (perechi de indexuri de puncte)
+    const connections = [[5, 7], [7, 9], [6, 8], [8, 10], [5, 6], [5, 11], [6, 12], [11, 12]];
+
+    ctx.strokeStyle = "#00FF00"; // Verde pentru oase
+    ctx.lineWidth = 3;
+
+    connections.forEach(([i, j]) => {
+        if (keypoints[i] && keypoints[j]) {
+            ctx.beginPath();
+            ctx.moveTo(keypoints[i][0], keypoints[i][1]);
+            ctx.lineTo(keypoints[j][0], keypoints[j][1]);
+            ctx.stroke();
+        }
+    });
+
+    // Desenăm punctele (articulațiile)
+    keypoints.forEach(kp => {
+        ctx.beginPath();
+        ctx.arc(kp[0], kp[1], 4, 0, 2 * Math.PI);
+        ctx.fillStyle = "#FF6600";
+        ctx.fill();
+    });
+}	
+
 
     // Pornim totul
     setupCamera();

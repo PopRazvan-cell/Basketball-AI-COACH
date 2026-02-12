@@ -1,36 +1,85 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
-        <div class="position-relative">
-            <video id="webcam" autoplay playsinline muted class="w-100 rounded border border-warning shadow-lg"></video>
-            <canvas id="skeleton_overlay" class="position-absolute top-0 start-0 w-100 h-100"></canvas>
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-lg-8 col-md-12 mb-4">
+            <div class="card bg-dark shadow-lg overflow-hidden">
+                <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">🚀 ANALIZĂ LIVE BIOMECANICĂ</h5>
+                    <span id="status" class="badge bg-danger">DECONECTAT</span>
+                </div>
+                
+                <div class="video-container" style="position: relative; width: 100%; aspect-ratio: 4/3; background: #000;">
+                    <video id="webcam" autoplay playsinline muted 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+                    </video>
+                    
+                    <canvas id="skeleton_overlay" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none;">
+                    </canvas>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card p-3 mb-3 border-start border-warning border-4">
-            <h5>Status Sistem</h5>
-            <div id="status" class="badge bg-secondary">Deconectat de la Server</div>
-            <hr>
-            <h6>Jucător Detectat: <span id="player_name" class="text-warning">Căutare...</span></h6>
-        </div>
-        
-        <div class="card p-3">
-            <h5>Statistici Live</h5>
-            <ul class="list-group list-group-flush bg-transparent">
-                <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
-                    Unghi Cot: <strong id="elbow_angle">--°</strong>
-                </li>
-                <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
-                    Săritură (Y): <strong id="jump_height">-- cm</strong>
-                </li>
-                <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
-                    Aruncări: <strong id="shots_count">0</strong>
-                </li>
-            </ul>
+
+        <div class="col-lg-4 col-md-12">
+            <div class="card mb-3 border-warning border-3 bg-dark text-white">
+                <div class="card-body text-center">
+                    <h6 class="text-uppercase text-muted small">Jucător Identificat</h6>
+                    <h2 id="player_name" class="text-warning fw-bold">Căutare...</h2>
+                </div>
+            </div>
+
+            <div class="card bg-dark text-white shadow">
+                <div class="card-header bg-secondary">
+                    <h5 class="mb-0">Date Performanță</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span>Unghi Cot (Aruncare):</span>
+                        <span id="elbow_angle" class="h3 text-info mb-0">--°</span>
+                    </div>
+                    <div class="progress mb-4" style="height: 10px;">
+                        <div id="angle_progress" class="progress-bar bg-info" role="progressbar" style="width: 0%"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span>Înălțime Săritură:</span>
+                        <span id="jump_height" class="h3 text-success mb-0">-- cm</span>
+                    </div>
+
+                    <hr class="bg-secondary">
+
+                    <div class="text-center">
+                        <p class="mb-1 text-muted">Total Aruncări Detectate</p>
+                        <h1 id="shots_count" class="display-4 fw-bold">0</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3 small">
+                <strong>Sfat:</strong> Asigură-te că întreg corpul este vizibil în cadru pentru o precizie maximă a scheletului RTMPose.
+            </div>
         </div>
     </div>
 </div>
 
-<script src="/static/js/streaming.js"></script>
+<script src="/static/js/streaming.js?v={{ range(1, 1000) | random }}"></script>
+
+<style>
+    /* Efect de iluminare pentru video când este activ */
+    #webcam {
+        filter: brightness(1.1) contrast(1.1);
+    }
+    
+    /* Personalizare sidebar */
+    .card {
+        border-radius: 15px;
+    }
+
+    /* Animatie pentru identificare */
+    #player_name {
+        transition: all 0.3s ease;
+    }
+</style>
 {% endblock %}

@@ -4,6 +4,7 @@ FROM python:3.9-slim
 # Am înlocuit libgl1-mesa-glx cu libgl1 și am adăugat biblioteci de suport pentru OpenCV
 RUN apt-get update && apt-get install -y \
     build-essential \
+    wget \
     cmake \
     libgl1 \
     libglib2.0-0 \
@@ -13,6 +14,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+
+RUN mkdir -p models \
+    && wget https://huggingface.co/ziq/rtm/resolve/main/rtmpose-l.onnx -O models/rtmpose-m.onnx
 
 # 2. Copiem requirements și instalăm pachetele Python
 COPY requirements.txt .
