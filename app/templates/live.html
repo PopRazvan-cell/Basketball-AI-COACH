@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="card bg-dark text-white mb-3 border-secondary">
+ <div class="card-header bg-secondary py-2">
+ <h6 class="mb-0">Control Module AI</h6>
+ </div>
+ <div class="card-body">
+ <div class="form-check form-switch mb-2">
+ <input class="form-check-input" type="checkbox" id="toggle_face" checked>
+ <label class="form-check-label" for="toggle_face">FaceID</label>
+ </div>
+ <div class="form-check form-switch">
+ <input class="form-check-input" type="checkbox" id="toggle_pose" checked>
+ <label class="form-check-label" for="toggle_pose">RTMPose (Schelet)</label>
+ </div>
+ </div>
+</div>
+
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-lg-8 col-md-12 mb-4">

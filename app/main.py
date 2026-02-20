@@ -70,22 +70,19 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            data = await websocket.receive_text()
-            header, encoded = data.split(",", 1)
-            binary_data = base64.b64decode(encoded)
-            nparr = np.frombuffer(binary_data, np.uint8)
-            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            data = await websocket.receive_json()
+            image_data = data.get("image")
+            settings = data.get("settings", {"face": True, "pose": True})
 
             # --- MODIFICARE: Aici folosim procesorul! ---
             # Trimitem cadrul la analiză
-            analysis_result = processor.process_frame(frame)
-            
-            # Trimitem rezultatul înapoi la browser
-            await websocket.send_json(analysis_result)
-            # --------------------------------------------
+           # Decodare imagine... (codul existent)
 
-    except WebSocketDisconnect:
-        print("Client deconectat.")
+            analysis_result = processor.process_frame(
+            frame,
+            run_face=settings.get("face"),
+            run_pose=settings.get("pose")
+            )
+            await websocket.send_json(analysis_result)
     except Exception as e:
-        print(f"Eroare WebSocket: {e}")
-        await websocket.close()
+            print(f"Eroare: {e}")

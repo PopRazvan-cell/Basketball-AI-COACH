@@ -105,7 +105,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Compresie JPEG 50% pentru a nu bloca conexiunea la sală
                 const frameData = hiddenCanvas.toDataURL('image/jpeg', 0.5);
-                socket.send(frameData);
+                setInterval(() => {
+                    if (socket.readyState === WebSocket.OPEN && video.readyState === video.HAVE_ENOUGH_DATA) {
+                    hiddenCtx.drawImage(video, 0, 0, 640, 480);
+                    const frameData = hiddenCanvas.toDataURL('image/jpeg', 0.5);
+                    // Cream pachetul de date
+                    const payload = {
+                    image: frameData,
+                    settings: {
+                    face: document.getElementById('toggle_face').checked,
+                    pose: document.getElementById('toggle_pose').checked
+                    }
+                    };
+                    socket.send(JSON.stringify(payload));
+                    }
+                    }, 80);
+
             }
         }, 100); // ~10 FPS
     }
